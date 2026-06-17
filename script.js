@@ -1,8 +1,8 @@
-const PURCHASE_PRICE = 63000;
+const PURCHASE_PRICE = 630000000;
 const START_YEAR = 2026;
 const START_MONTH = 11;
 const HOPE_RATE = 0.013;
-const LOAN_LIMIT = 40000;
+const LOAN_LIMIT = 400000000;
 const LTV_BUCKETS = [30, 40, 50, 60, 70];
 const BASE_RATES = {
   70: [50, 40, 30],
@@ -68,7 +68,7 @@ function init() {
     button.addEventListener("click", () => {
       const ltv = Number(button.dataset.ltv);
       const loanAmount = Math.min(PURCHASE_PRICE * (ltv / 100), LOAN_LIMIT);
-      loanAmountInput.value = formatWonInputFromManwon(loanAmount);
+      loanAmountInput.value = formatWon(loanAmount);
       updateHoldingYearOptions();
       calculate();
     });
@@ -80,7 +80,7 @@ function init() {
 function updateHoldingYearOptions() {
   const selectedYear = holdingYearsInput.value || "10";
   const children = Number(childrenInput.value);
-  const loanAmount = parseWonToManwon(loanAmountInput.value);
+  const loanAmount = parseMoneyInput(loanAmountInput.value);
   const ltv = loanAmount > 0 ? (loanAmount / PURCHASE_PRICE) * 100 : 0;
   const bucket = getLtvBucket(ltv);
 
@@ -113,8 +113,8 @@ function buildSettlementTable() {
 }
 
 function calculate() {
-  const loanAmount = parseWonToManwon(loanAmountInput.value);
-  const sellPrice = parseWonToManwon(sellPriceInput.value);
+  const loanAmount = parseMoneyInput(loanAmountInput.value);
+  const sellPrice = parseMoneyInput(sellPriceInput.value);
   const children = Number(childrenInput.value);
   const holdingYears = Number(holdingYearsInput.value);
   const normalRate = Number(normalRateInput.value) / 100;
@@ -149,7 +149,7 @@ function calculate() {
 
 function updateHints(loanAmount, sellPrice, holdingYears, ltv, bucket) {
   if (loanAmount > LOAN_LIMIT) {
-    ltvHint.textContent = `대출한도 4억원을 초과했습니다. 현재 LTV ${ltv.toFixed(1)}%`;
+    ltvHint.textContent = `대출한도 400,000,000원을 초과했습니다. 현재 LTV ${ltv.toFixed(1)}%`;
     ltvHint.classList.add("is-warning");
   } else if (bucket) {
     ltvHint.textContent = `LTV ${ltv.toFixed(1)}%, 정산표 ${bucket}% 구간`;
@@ -170,31 +170,31 @@ function updateHints(loanAmount, sellPrice, holdingYears, ltv, bucket) {
 function updateActiveLtvButton(ltv) {
   ltvButtons.forEach((button) => {
     const targetLoan = Math.min(PURCHASE_PRICE * (Number(button.dataset.ltv) / 100), LOAN_LIMIT);
-    const currentLoan = parseWonToManwon(loanAmountInput.value);
+    const currentLoan = parseMoneyInput(loanAmountInput.value);
     button.classList.toggle("is-active", Math.abs(currentLoan - targetLoan) <= 1);
   });
 }
 
 function updateResults(result) {
-  document.querySelector("#gainResult").textContent = formatWonFromManwon(result.gain);
+  document.querySelector("#gainResult").textContent = formatWon(result.gain);
   document.querySelector("#shareRateResult").textContent = `${result.shareRate}%`;
-  document.querySelector("#shareAmountResult").textContent = formatWonFromManwon(result.shareAmount);
+  document.querySelector("#shareAmountResult").textContent = formatWon(result.shareAmount);
   document.querySelector("#holdingResult").textContent = `${result.holdingYears}년`;
-  document.querySelector("#hopeInterestResult").textContent = formatWonFromManwon(result.hopeLoan.totalInterest);
-  document.querySelector("#normalInterestResult").textContent = formatWonFromManwon(result.normalLoan.totalInterest);
-  document.querySelector("#hopeProfitResult").textContent = formatWonFromManwon(result.hopeProfit);
-  document.querySelector("#normalProfitResult").textContent = formatWonFromManwon(result.normalProfit);
-  document.querySelector("#hopeGracePayment").textContent = `${formatNumber(Math.round(result.hopeLoan.monthlyInterestOnly * 10000))}원`;
-  document.querySelector("#hopeFullPayment").textContent = `${formatNumber(Math.round(result.hopeLoan.monthlyFull * 10000))}원`;
-  document.querySelector("#normalPaymentResult").textContent = `${formatNumber(Math.round(result.normalLoan.monthlyFull * 10000))}원`;
+  document.querySelector("#hopeInterestResult").textContent = formatWon(result.hopeLoan.totalInterest);
+  document.querySelector("#normalInterestResult").textContent = formatWon(result.normalLoan.totalInterest);
+  document.querySelector("#hopeProfitResult").textContent = formatWon(result.hopeProfit);
+  document.querySelector("#normalProfitResult").textContent = formatWon(result.normalProfit);
+  document.querySelector("#hopeGracePayment").textContent = formatWon(result.hopeLoan.monthlyInterestOnly);
+  document.querySelector("#hopeFullPayment").textContent = formatWon(result.hopeLoan.monthlyFull);
+  document.querySelector("#normalPaymentResult").textContent = formatWon(result.normalLoan.monthlyFull);
 
   const verdict = document.querySelector("#verdict");
   verdict.classList.toggle("is-warning", result.diff < 0);
 
   if (result.diff > 0) {
-    verdict.textContent = `신희타가 일반대출보다 약 ${formatWonFromManwon(result.diff)} 유리합니다.`;
+    verdict.textContent = `신희타가 일반대출보다 약 ${formatWon(result.diff)} 유리합니다.`;
   } else if (result.diff < 0) {
-    verdict.textContent = `일반대출이 신희타보다 약 ${formatWonFromManwon(Math.abs(result.diff))} 유리합니다.`;
+    verdict.textContent = `일반대출이 신희타보다 약 ${formatWon(Math.abs(result.diff))} 유리합니다.`;
   } else {
     verdict.textContent = "두 방식의 최종 수익이 같습니다.";
   }
@@ -270,16 +270,8 @@ function parseMoneyInput(value) {
   return Number(String(value).replace(/[^\d]/g, "")) || 0;
 }
 
-function parseWonToManwon(value) {
-  return parseMoneyInput(value) / 10000;
-}
-
-function formatWonInputFromManwon(value) {
-  return formatNumber(Math.round(value * 10000));
-}
-
-function formatWonFromManwon(value) {
-  return `${formatWonInputFromManwon(value)}원`;
+function formatWon(value) {
+  return `${formatNumber(Math.round(value))}원`;
 }
 
 function formatNumber(value) {
