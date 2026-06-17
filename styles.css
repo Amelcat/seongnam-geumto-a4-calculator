@@ -1,0 +1,387 @@
+:root {
+  --ink: #1f2937;
+  --muted: #667085;
+  --line: #d8dee8;
+  --panel: #ffffff;
+  --canvas: #f4f7fb;
+  --accent: #0f9f8f;
+  --accent-dark: #08786d;
+  --warn: #b42318;
+  --soft: #e7f7f4;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--canvas);
+  color: var(--ink);
+  font-family: Pretendard, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  line-height: 1.5;
+}
+
+button,
+input,
+select {
+  font: inherit;
+}
+
+.app-shell {
+  width: min(1120px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: 32px 0 56px;
+}
+
+.summary-panel,
+.input-panel,
+.result-panel,
+.table-panel {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  box-shadow: 0 12px 30px rgba(31, 41, 55, 0.07);
+}
+
+.summary-panel {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 24px;
+  align-items: end;
+  padding: 32px;
+  margin-bottom: 24px;
+}
+
+.eyebrow {
+  margin: 0 0 6px;
+  color: var(--accent-dark);
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
+h1,
+h2 {
+  margin: 0;
+  letter-spacing: 0;
+}
+
+h1 {
+  font-size: 2rem;
+}
+
+h2 {
+  font-size: 1.25rem;
+}
+
+.intro {
+  margin: 10px 0 0;
+  color: var(--muted);
+}
+
+.fixed-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin: 0;
+}
+
+.fixed-grid div {
+  padding: 14px;
+  background: var(--soft);
+  border-radius: 8px;
+}
+
+.fixed-grid dt {
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.fixed-grid dd {
+  margin: 4px 0 0;
+  font-weight: 900;
+}
+
+.calculator-grid {
+  display: grid;
+  grid-template-columns: minmax(320px, 420px) 1fr;
+  gap: 24px;
+}
+
+.input-panel,
+.result-panel,
+.table-panel {
+  padding: 24px;
+}
+
+fieldset {
+  margin: 0 0 22px;
+  padding: 0;
+  border: 0;
+}
+
+legend {
+  margin-bottom: 14px;
+  font-weight: 900;
+}
+
+label {
+  display: block;
+  margin: 14px 0 7px;
+  color: #344054;
+  font-size: 0.92rem;
+  font-weight: 750;
+}
+
+select,
+input {
+  width: 100%;
+  height: 44px;
+  border: 1px solid #cfd6e1;
+  border-radius: 8px;
+  background: #fff;
+  color: var(--ink);
+  padding: 0 12px;
+}
+
+input:focus,
+select:focus {
+  outline: 3px solid rgba(15, 159, 143, 0.18);
+  border-color: var(--accent);
+}
+
+.money-input,
+.percent-input {
+  display: grid;
+  grid-template-columns: 1fr 64px;
+}
+
+.money-input input,
+.percent-input input {
+  border-radius: 8px 0 0 8px;
+  text-align: right;
+  font-weight: 800;
+}
+
+.money-input span,
+.percent-input span {
+  display: grid;
+  place-items: center;
+  border: 1px solid #cfd6e1;
+  border-left: 0;
+  border-radius: 0 8px 8px 0;
+  background: #f8fafc;
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.hint {
+  min-height: 21px;
+  margin: 7px 0 0;
+  color: var(--accent-dark);
+  font-size: 0.86rem;
+  font-weight: 700;
+}
+
+.hint.is-warning {
+  color: var(--warn);
+}
+
+.segmented {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.segmented button {
+  min-height: 38px;
+  border: 1px solid #cfd6e1;
+  border-radius: 8px;
+  background: #fff;
+  color: #344054;
+  cursor: pointer;
+  font-weight: 800;
+}
+
+.segmented button:hover,
+.segmented button.is-active {
+  border-color: var(--accent);
+  background: var(--soft);
+  color: var(--accent-dark);
+}
+
+.primary-action {
+  width: 100%;
+  min-height: 50px;
+  border: 0;
+  border-radius: 8px;
+  background: var(--accent);
+  color: white;
+  cursor: pointer;
+  font-weight: 900;
+}
+
+.primary-action:hover {
+  background: var(--accent-dark);
+}
+
+.verdict {
+  padding: 16px;
+  border-radius: 8px;
+  background: var(--soft);
+  color: var(--accent-dark);
+  font-weight: 900;
+  text-align: center;
+}
+
+.verdict.is-warning {
+  background: #fff3f0;
+  color: var(--warn);
+}
+
+.metric-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin: 18px 0;
+}
+
+.metric-grid article {
+  min-height: 96px;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fbfcfe;
+}
+
+.metric-grid span {
+  display: block;
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.metric-grid strong {
+  display: block;
+  margin-top: 10px;
+  font-size: 1.08rem;
+  word-break: keep-all;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.result-table th,
+.result-table td,
+#settlementTable th,
+#settlementTable td {
+  border-bottom: 1px solid var(--line);
+  padding: 12px 10px;
+  text-align: right;
+}
+
+.result-table th:first-child,
+.result-table td:first-child,
+#settlementTable th:first-child,
+#settlementTable td:first-child {
+  text-align: left;
+}
+
+.result-table th,
+#settlementTable th {
+  background: #f8fafc;
+  color: #475467;
+  font-size: 0.82rem;
+  font-weight: 900;
+}
+
+.subline {
+  display: block;
+}
+
+.table-panel {
+  margin-top: 24px;
+}
+
+.section-heading {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: end;
+  margin-bottom: 16px;
+}
+
+.section-heading p:last-child {
+  margin: 0;
+  color: var(--muted);
+  font-weight: 800;
+}
+
+.table-wrap {
+  max-height: 460px;
+  overflow: auto;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+
+#settlementTable th {
+  position: sticky;
+  top: 0;
+}
+
+#settlementTable tr.is-selected td {
+  background: var(--soft);
+  color: var(--accent-dark);
+  font-weight: 900;
+}
+
+@media (max-width: 900px) {
+  .summary-panel,
+  .calculator-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .fixed-grid,
+  .metric-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 560px) {
+  .app-shell {
+    width: min(100% - 20px, 1120px);
+    padding-top: 16px;
+  }
+
+  .summary-panel,
+  .input-panel,
+  .result-panel,
+  .table-panel {
+    padding: 18px;
+  }
+
+  h1 {
+    font-size: 1.55rem;
+  }
+
+  .fixed-grid,
+  .metric-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .segmented {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .result-table th,
+  .result-table td,
+  #settlementTable th,
+  #settlementTable td {
+    padding: 10px 8px;
+    font-size: 0.9rem;
+  }
+}
