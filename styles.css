@@ -35,6 +35,7 @@ select {
 }
 
 .summary-panel,
+.housing-panel,
 .input-panel,
 .result-panel,
 .table-panel {
@@ -107,6 +108,21 @@ h2 {
   display: grid;
   grid-template-columns: minmax(320px, 420px) 1fr;
   gap: 24px;
+}
+
+.housing-panel {
+  padding: 24px;
+  margin-bottom: 24px;
+}
+
+.housing-controls {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.housing-controls label {
+  margin-top: 0;
 }
 
 .input-panel,
@@ -345,6 +361,10 @@ table {
     grid-template-columns: 1fr;
   }
 
+  .housing-controls {
+    grid-template-columns: 1fr 1fr;
+  }
+
   .fixed-grid,
   .metric-grid {
     grid-template-columns: 1fr 1fr;
@@ -358,6 +378,7 @@ table {
   }
 
   .summary-panel,
+  .housing-panel,
   .input-panel,
   .result-panel,
   .table-panel {
@@ -369,7 +390,8 @@ table {
   }
 
   .fixed-grid,
-  .metric-grid {
+  .metric-grid,
+  .housing-controls {
     grid-template-columns: 1fr;
   }
 

@@ -18,7 +18,7 @@
 
       <dl class="fixed-grid" aria-label="고정 계산 조건">
         <div>
-          <dt>선택 분양가 / 입주금</dt>
+          <dt>총 분양가 / 입주금</dt>
           <dd id="purchasePriceDisplay">626,740,000원</dd>
         </div>
         <div>
@@ -32,11 +32,16 @@
       </dl>
     </section>
 
-    <section class="calculator-grid" aria-label="계산기">
-      <form class="input-panel" id="calculatorForm">
-        <fieldset>
-          <legend>주택 선택</legend>
+    <section class="housing-panel" aria-labelledby="housing-title">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">분양가 선택</p>
+          <h2 id="housing-title">주택 선택</h2>
+        </div>
+      </div>
 
+      <div class="housing-controls">
+        <div>
           <label for="housingType">주택 타입</label>
           <select id="housingType" name="housingType">
             <option value="55A">55A</option>
@@ -46,7 +51,9 @@
             <option value="55E" selected>55E</option>
             <option value="55F">55F</option>
           </select>
+        </div>
 
+        <div>
           <label for="floorType">층별</label>
           <select id="floorType" name="floorType">
             <option value="1층">1층</option>
@@ -55,15 +62,29 @@
             <option value="4층">4층</option>
             <option value="5층~최상층" selected>5층~최상층</option>
           </select>
+        </div>
 
+        <div>
           <label for="optionType">타입별</label>
           <select id="optionType" name="optionType">
             <option value="기본형" selected>기본형</option>
             <option value="마이너스옵션">마이너스옵션</option>
           </select>
-          <p class="hint" id="purchasePriceHint">선택 분양가 626,740,000원</p>
-        </fieldset>
+        </div>
 
+        <div>
+          <label for="optionPrice">옵션 가격</label>
+          <div class="money-input">
+            <input id="optionPrice" name="optionPrice" type="text" inputmode="numeric" value="0" autocomplete="off">
+            <span>원</span>
+          </div>
+        </div>
+      </div>
+      <p class="hint" id="purchasePriceHint">주택가격 626,740,000원 + 옵션 0원 = 총 분양가 626,740,000원</p>
+    </section>
+
+    <section class="calculator-grid" aria-label="계산기">
+      <form class="input-panel" id="calculatorForm">
         <fieldset>
           <legend>대출 조건</legend>
 

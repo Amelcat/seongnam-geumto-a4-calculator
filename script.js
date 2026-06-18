@@ -66,6 +66,7 @@ const form = document.querySelector("#calculatorForm");
 const housingTypeInput = document.querySelector("#housingType");
 const floorTypeInput = document.querySelector("#floorType");
 const optionTypeInput = document.querySelector("#optionType");
+const optionPriceInput = document.querySelector("#optionPrice");
 const loanAmountInput = document.querySelector("#loanAmount");
 const sellPriceInput = document.querySelector("#sellPrice");
 const childrenInput = document.querySelector("#children");
@@ -97,6 +98,12 @@ function init() {
       updateHoldingYearOptions();
       calculate();
     });
+  });
+
+  optionPriceInput.addEventListener("input", () => {
+    optionPriceInput.value = formatNumber(parseMoneyInput(optionPriceInput.value));
+    updateHoldingYearOptions();
+    calculate();
   });
 
   loanAmountInput.addEventListener("input", () => {
@@ -169,7 +176,9 @@ function buildSettlementTable() {
 }
 
 function calculate() {
-  const purchasePrice = getPurchasePrice();
+  const basePurchasePrice = getBasePurchasePrice();
+  const optionPrice = parseMoneyInput(optionPriceInput.value);
+  const purchasePrice = basePurchasePrice + optionPrice;
   const loanAmount = parseMoneyInput(loanAmountInput.value);
   const sellPrice = parseMoneyInput(sellPriceInput.value);
   const children = Number(childrenInput.value);
@@ -187,7 +196,7 @@ function calculate() {
   const normalProfit = gain - normalLoan.totalInterest;
   const diff = hopeProfit - normalProfit;
 
-  updatePurchasePrice(purchasePrice);
+  updatePurchasePrice(basePurchasePrice, optionPrice, purchasePrice);
   updateHints(purchasePrice, loanAmount, sellPrice, holdingYears, ltv, bucket);
   updateActiveLtvButton(purchasePrice);
   updateResults({
@@ -205,10 +214,9 @@ function calculate() {
   renderSettlementTable(bucket || 30, holdingYears, children);
 }
 
-function updatePurchasePrice(purchasePrice) {
-  const formattedPrice = formatWon(purchasePrice);
-  purchasePriceDisplay.textContent = formattedPrice;
-  purchasePriceHint.textContent = `선택 분양가 ${formattedPrice}`;
+function updatePurchasePrice(basePurchasePrice, optionPrice, purchasePrice) {
+  purchasePriceDisplay.textContent = formatWon(purchasePrice);
+  purchasePriceHint.textContent = `주택가격 ${formatWon(basePurchasePrice)} + 옵션 ${formatWon(optionPrice)} = 총 분양가 ${formatWon(purchasePrice)}`;
 }
 
 function updateHints(purchasePrice, loanAmount, sellPrice, holdingYears, ltv, bucket) {
@@ -240,6 +248,10 @@ function updateActiveLtvButton(purchasePrice) {
 }
 
 function getPurchasePrice() {
+  return getBasePurchasePrice() + parseMoneyInput(optionPriceInput.value);
+}
+
+function getBasePurchasePrice() {
   return HOUSING_PRICES[housingTypeInput.value][floorTypeInput.value][optionTypeInput.value];
 }
 
