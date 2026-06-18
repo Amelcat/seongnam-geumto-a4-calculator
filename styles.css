@@ -88,6 +88,19 @@ h2 {
   border-radius: 8px;
 }
 
+.fixed-grid .purchase-price-summary {
+  background: #fff1dc;
+  border: 1px solid #f2c078;
+}
+
+.fixed-grid .purchase-price-summary dt {
+  color: #875b18;
+}
+
+.fixed-grid .purchase-price-summary dd {
+  color: #6f4610;
+}
+
 .fixed-grid dt {
   color: var(--muted);
   font-size: 0.78rem;
@@ -106,14 +119,14 @@ h2 {
 }
 
 .housing-panel {
-  width: min(680px, 100%);
+  width: min(840px, 100%);
   padding: 24px;
   margin-bottom: 16px;
 }
 
 .housing-controls {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: minmax(140px, 1fr) minmax(160px, 1.2fr) minmax(150px, 0.9fr) minmax(190px, 1.3fr);
   gap: 16px;
 }
 
@@ -387,6 +400,10 @@ table {
 @media (max-width: 900px) {
   .calculator-grid {
     grid-template-columns: 1fr;
+  }
+
+  .housing-controls {
+    grid-template-columns: 1fr 1fr;
   }
 
   .fixed-grid,
