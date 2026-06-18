@@ -130,7 +130,7 @@ function init() {
     button.addEventListener("click", () => {
       const ltv = Number(button.dataset.ltv);
       const loanAmount = Math.min(getBasePurchasePrice() * (ltv / 100), LOAN_LIMIT);
-      loanAmountInput.value = formatWon(loanAmount);
+      loanAmountInput.value = formatNumber(Math.round(loanAmount));
       updateHoldingYearOptions();
       calculate();
     });
