@@ -126,7 +126,7 @@ h2 {
 
 .housing-controls {
   display: grid;
-  grid-template-columns: minmax(140px, 1fr) minmax(160px, 1.2fr) minmax(150px, 0.9fr) minmax(190px, 1.3fr);
+  grid-template-columns: repeat(3, minmax(190px, 1fr)) minmax(140px, 0.75fr);
   gap: 16px;
 }
 
