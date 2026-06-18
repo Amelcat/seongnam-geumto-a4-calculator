@@ -137,14 +137,14 @@ h2 {
 }
 
 .housing-panel {
-  width: min(840px, 100%);
+  width: min(900px, 100%);
   padding: 24px;
   margin-bottom: 16px;
 }
 
 .housing-controls {
   display: grid;
-  grid-template-columns: repeat(3, minmax(190px, 1fr)) minmax(140px, 0.75fr);
+  grid-template-columns: repeat(3, minmax(180px, 1fr)) minmax(250px, 1.2fr);
   gap: 16px;
 }
 
@@ -196,6 +196,7 @@ input {
 .checkbox-field {
   display: flex;
   align-items: flex-end;
+  gap: 16px;
 }
 
 .checkbox-control {
@@ -219,6 +220,7 @@ input {
 .checkbox-control span {
   color: var(--ink);
   font-weight: 700;
+  white-space: nowrap;
 }
 
 input:focus,
