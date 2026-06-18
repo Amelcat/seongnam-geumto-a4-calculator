@@ -10,6 +10,14 @@ const BALCONY_PRICES = {
   "55E": 4753000,
   "55F": 6783000,
 };
+const MINUS_OPTION_BALCONY_PRICES = {
+  "55A": 5550000,
+  "55B": 5128000,
+  "55C": 3721000,
+  "55D": 4890000,
+  "55E": 4040000,
+  "55F": 5766000,
+};
 const HOUSING_PRICES = {
   "55A": {
     "1층": { "기본형": 584590000, "마이너스옵션": 557634000 },
@@ -264,7 +272,12 @@ function getBasePurchasePrice() {
 }
 
 function getBalconyPrice() {
-  return balconyExpansionInput.checked ? BALCONY_PRICES[housingTypeInput.value] : 0;
+  if (!balconyExpansionInput.checked) return 0;
+
+  const prices = optionTypeInput.checked
+    ? MINUS_OPTION_BALCONY_PRICES
+    : BALCONY_PRICES;
+  return prices[housingTypeInput.value];
 }
 
 function getLtvPurchasePrice() {
