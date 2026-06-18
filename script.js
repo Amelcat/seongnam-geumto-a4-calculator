@@ -129,7 +129,7 @@ function init() {
   ltvButtons.forEach((button) => {
     button.addEventListener("click", () => {
       const ltv = Number(button.dataset.ltv);
-      const loanAmount = Math.min(getPurchasePrice() * (ltv / 100), LOAN_LIMIT);
+      const loanAmount = Math.min(getBasePurchasePrice() * (ltv / 100), LOAN_LIMIT);
       loanAmountInput.value = formatWon(loanAmount);
       updateHoldingYearOptions();
       calculate();
@@ -143,8 +143,8 @@ function updateHoldingYearOptions() {
   const selectedYear = holdingYearsInput.value || "10";
   const children = Number(childrenInput.value);
   const loanAmount = parseMoneyInput(loanAmountInput.value);
-  const purchasePrice = getPurchasePrice();
-  const ltv = loanAmount > 0 ? (loanAmount / purchasePrice) * 100 : 0;
+  const basePurchasePrice = getBasePurchasePrice();
+  const ltv = loanAmount > 0 ? (loanAmount / basePurchasePrice) * 100 : 0;
   const bucket = getLtvBucket(ltv);
 
   holdingYearsInput.textContent = "";
@@ -186,7 +186,7 @@ function calculate() {
   const normalRate = Number(normalRateInput.value) / 100;
   const loanTerm = Number(loanTermInput.value);
   const gain = sellPrice - purchasePrice;
-  const ltv = loanAmount > 0 ? (loanAmount / purchasePrice) * 100 : 0;
+  const ltv = loanAmount > 0 ? (loanAmount / basePurchasePrice) * 100 : 0;
   const bucket = getLtvBucket(ltv);
   const shareRate = gain > 0 && bucket ? settlementTable[bucket][holdingYears][children] : 0;
   const shareAmount = gain > 0 ? gain * (shareRate / 100) : 0;
@@ -198,7 +198,7 @@ function calculate() {
 
   updatePurchasePrice(basePurchasePrice, optionPrice, purchasePrice);
   updateHints(purchasePrice, loanAmount, sellPrice, holdingYears, ltv, bucket);
-  updateActiveLtvButton(purchasePrice);
+  updateActiveLtvButton(basePurchasePrice);
   updateResults({
     bucket,
     diff,
@@ -221,13 +221,13 @@ function updatePurchasePrice(basePurchasePrice, optionPrice, purchasePrice) {
 
 function updateHints(purchasePrice, loanAmount, sellPrice, holdingYears, ltv, bucket) {
   if (loanAmount > LOAN_LIMIT) {
-    ltvHint.textContent = `대출한도 400,000,000원을 초과했습니다. 현재 LTV ${ltv.toFixed(1)}%`;
+    ltvHint.textContent = `대출한도 400,000,000원을 초과했습니다. 현재 LTV ${ltv.toFixed(1)}% (옵션 가격 제외)`;
     ltvHint.classList.add("is-warning");
   } else if (bucket) {
-    ltvHint.textContent = `LTV ${ltv.toFixed(1)}%, 정산표 ${bucket}% 구간`;
+    ltvHint.textContent = `LTV ${ltv.toFixed(1)}%, 정산표 ${bucket}% 구간 (옵션 가격 제외)`;
     ltvHint.classList.remove("is-warning");
   } else {
-    ltvHint.textContent = "LTV 30% 미만은 환수율 0%로 계산합니다.";
+    ltvHint.textContent = "LTV 30% 미만은 환수율 0%로 계산합니다. (옵션 가격 제외)";
     ltvHint.classList.remove("is-warning");
   }
 
@@ -239,16 +239,12 @@ function updateHints(purchasePrice, loanAmount, sellPrice, holdingYears, ltv, bu
   }
 }
 
-function updateActiveLtvButton(purchasePrice) {
+function updateActiveLtvButton(basePurchasePrice) {
   ltvButtons.forEach((button) => {
-    const targetLoan = Math.min(purchasePrice * (Number(button.dataset.ltv) / 100), LOAN_LIMIT);
+    const targetLoan = Math.min(basePurchasePrice * (Number(button.dataset.ltv) / 100), LOAN_LIMIT);
     const currentLoan = parseMoneyInput(loanAmountInput.value);
     button.classList.toggle("is-active", Math.abs(currentLoan - targetLoan) <= 1);
   });
-}
-
-function getPurchasePrice() {
-  return getBasePurchasePrice() + parseMoneyInput(optionPriceInput.value);
 }
 
 function getBasePurchasePrice() {
