@@ -1,8 +1,51 @@
-const PURCHASE_PRICE = 630000000;
 const START_YEAR = 2026;
 const START_MONTH = 11;
 const HOPE_RATE = 0.013;
 const LOAN_LIMIT = 400000000;
+const HOUSING_PRICES = {
+  "55A": {
+    "1층": { "기본형": 584590000, "마이너스옵션": 557634000 },
+    "2층": { "기본형": 590810000, "마이너스옵션": 563854000 },
+    "3층": { "기본형": 603250000, "마이너스옵션": 576294000 },
+    "4층": { "기본형": 615690000, "마이너스옵션": 588734000 },
+    "5층~최상층": { "기본형": 621910000, "마이너스옵션": 594954000 },
+  },
+  "55B": {
+    "1층": { "기본형": 586660000, "마이너스옵션": 558147000 },
+    "2층": { "기본형": 592900000, "마이너스옵션": 564387000 },
+    "3층": { "기본형": 605380000, "마이너스옵션": 576867000 },
+    "4층": { "기본형": 617860000, "마이너스옵션": 589347000 },
+    "5층~최상층": { "기본형": 624110000, "마이너스옵션": 595597000 },
+  },
+  "55C": {
+    "1층": { "기본형": 578920000, "마이너스옵션": 552225000 },
+    "2층": { "기본형": 585080000, "마이너스옵션": 558385000 },
+    "3층": { "기본형": 597400000, "마이너스옵션": 570705000 },
+    "4층": { "기본형": 609720000, "마이너스옵션": 583025000 },
+    "5층~최상층": { "기본형": 615880000, "마이너스옵션": 589185000 },
+  },
+  "55D": {
+    "1층": { "기본형": 584550000, "마이너스옵션": 557596000 },
+    "2층": { "기본형": 590770000, "마이너스옵션": 563816000 },
+    "3층": { "기본형": 603210000, "마이너스옵션": 576256000 },
+    "4층": { "기본형": 615650000, "마이너스옵션": 588696000 },
+    "5층~최상층": { "기본형": 621870000, "마이너스옵션": 594916000 },
+  },
+  "55E": {
+    "1층": { "기본형": 589130000, "마이너스옵션": 561965000 },
+    "2층": { "기본형": 595400000, "마이너스옵션": 568235000 },
+    "3층": { "기본형": 607930000, "마이너스옵션": 580765000 },
+    "4층": { "기본형": 620470000, "마이너스옵션": 593305000 },
+    "5층~최상층": { "기본형": 626740000, "마이너스옵션": 599575000 },
+  },
+  "55F": {
+    "1층": { "기본형": 586450000, "마이너스옵션": 559408000 },
+    "2층": { "기본형": 592690000, "마이너스옵션": 565648000 },
+    "3층": { "기본형": 605170000, "마이너스옵션": 578128000 },
+    "4층": { "기본형": 617650000, "마이너스옵션": 590608000 },
+    "5층~최상층": { "기본형": 623890000, "마이너스옵션": 596848000 },
+  },
+};
 const LTV_BUCKETS = [30, 40, 50, 60, 70];
 const BASE_RATES = {
   70: [50, 40, 30],
@@ -20,6 +63,9 @@ const MIN_RATES = {
 };
 
 const form = document.querySelector("#calculatorForm");
+const housingTypeInput = document.querySelector("#housingType");
+const floorTypeInput = document.querySelector("#floorType");
+const optionTypeInput = document.querySelector("#optionType");
 const loanAmountInput = document.querySelector("#loanAmount");
 const sellPriceInput = document.querySelector("#sellPrice");
 const childrenInput = document.querySelector("#children");
@@ -28,6 +74,8 @@ const normalRateInput = document.querySelector("#normalRate");
 const loanTermInput = document.querySelector("#loanTerm");
 const ltvHint = document.querySelector("#ltvHint");
 const growthHint = document.querySelector("#growthHint");
+const purchasePriceDisplay = document.querySelector("#purchasePriceDisplay");
+const purchasePriceHint = document.querySelector("#purchasePriceHint");
 const tableCaption = document.querySelector("#tableCaption");
 const settlementTableBody = document.querySelector("#settlementTable tbody");
 const ltvButtons = Array.from(document.querySelectorAll("[data-ltv]"));
@@ -42,6 +90,13 @@ function init() {
   form.addEventListener("submit", (event) => {
     event.preventDefault();
     calculate();
+  });
+
+  [housingTypeInput, floorTypeInput, optionTypeInput].forEach((input) => {
+    input.addEventListener("input", () => {
+      updateHoldingYearOptions();
+      calculate();
+    });
   });
 
   loanAmountInput.addEventListener("input", () => {
@@ -67,7 +122,7 @@ function init() {
   ltvButtons.forEach((button) => {
     button.addEventListener("click", () => {
       const ltv = Number(button.dataset.ltv);
-      const loanAmount = Math.min(PURCHASE_PRICE * (ltv / 100), LOAN_LIMIT);
+      const loanAmount = Math.min(getPurchasePrice() * (ltv / 100), LOAN_LIMIT);
       loanAmountInput.value = formatWon(loanAmount);
       updateHoldingYearOptions();
       calculate();
@@ -81,7 +136,8 @@ function updateHoldingYearOptions() {
   const selectedYear = holdingYearsInput.value || "10";
   const children = Number(childrenInput.value);
   const loanAmount = parseMoneyInput(loanAmountInput.value);
-  const ltv = loanAmount > 0 ? (loanAmount / PURCHASE_PRICE) * 100 : 0;
+  const purchasePrice = getPurchasePrice();
+  const ltv = loanAmount > 0 ? (loanAmount / purchasePrice) * 100 : 0;
   const bucket = getLtvBucket(ltv);
 
   holdingYearsInput.textContent = "";
@@ -113,14 +169,15 @@ function buildSettlementTable() {
 }
 
 function calculate() {
+  const purchasePrice = getPurchasePrice();
   const loanAmount = parseMoneyInput(loanAmountInput.value);
   const sellPrice = parseMoneyInput(sellPriceInput.value);
   const children = Number(childrenInput.value);
   const holdingYears = Number(holdingYearsInput.value);
   const normalRate = Number(normalRateInput.value) / 100;
   const loanTerm = Number(loanTermInput.value);
-  const gain = sellPrice - PURCHASE_PRICE;
-  const ltv = loanAmount > 0 ? (loanAmount / PURCHASE_PRICE) * 100 : 0;
+  const gain = sellPrice - purchasePrice;
+  const ltv = loanAmount > 0 ? (loanAmount / purchasePrice) * 100 : 0;
   const bucket = getLtvBucket(ltv);
   const shareRate = gain > 0 && bucket ? settlementTable[bucket][holdingYears][children] : 0;
   const shareAmount = gain > 0 ? gain * (shareRate / 100) : 0;
@@ -130,8 +187,9 @@ function calculate() {
   const normalProfit = gain - normalLoan.totalInterest;
   const diff = hopeProfit - normalProfit;
 
-  updateHints(loanAmount, sellPrice, holdingYears, ltv, bucket);
-  updateActiveLtvButton(ltv);
+  updatePurchasePrice(purchasePrice);
+  updateHints(purchasePrice, loanAmount, sellPrice, holdingYears, ltv, bucket);
+  updateActiveLtvButton(purchasePrice);
   updateResults({
     bucket,
     diff,
@@ -147,7 +205,13 @@ function calculate() {
   renderSettlementTable(bucket || 30, holdingYears, children);
 }
 
-function updateHints(loanAmount, sellPrice, holdingYears, ltv, bucket) {
+function updatePurchasePrice(purchasePrice) {
+  const formattedPrice = formatWon(purchasePrice);
+  purchasePriceDisplay.textContent = formattedPrice;
+  purchasePriceHint.textContent = `선택 분양가 ${formattedPrice}`;
+}
+
+function updateHints(purchasePrice, loanAmount, sellPrice, holdingYears, ltv, bucket) {
   if (loanAmount > LOAN_LIMIT) {
     ltvHint.textContent = `대출한도 400,000,000원을 초과했습니다. 현재 LTV ${ltv.toFixed(1)}%`;
     ltvHint.classList.add("is-warning");
@@ -160,19 +224,23 @@ function updateHints(loanAmount, sellPrice, holdingYears, ltv, bucket) {
   }
 
   if (sellPrice > 0) {
-    const growthRate = (Math.pow(sellPrice / PURCHASE_PRICE, 1 / holdingYears) - 1) * 100;
+    const growthRate = (Math.pow(sellPrice / purchasePrice, 1 / holdingYears) - 1) * 100;
     growthHint.textContent = `연평균 상승률 ${growthRate.toFixed(2)}%`;
   } else {
     growthHint.textContent = "";
   }
 }
 
-function updateActiveLtvButton(ltv) {
+function updateActiveLtvButton(purchasePrice) {
   ltvButtons.forEach((button) => {
-    const targetLoan = Math.min(PURCHASE_PRICE * (Number(button.dataset.ltv) / 100), LOAN_LIMIT);
+    const targetLoan = Math.min(purchasePrice * (Number(button.dataset.ltv) / 100), LOAN_LIMIT);
     const currentLoan = parseMoneyInput(loanAmountInput.value);
     button.classList.toggle("is-active", Math.abs(currentLoan - targetLoan) <= 1);
   });
+}
+
+function getPurchasePrice() {
+  return HOUSING_PRICES[housingTypeInput.value][floorTypeInput.value][optionTypeInput.value];
 }
 
 function updateResults(result) {

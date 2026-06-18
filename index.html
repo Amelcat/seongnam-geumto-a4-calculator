@@ -4,22 +4,22 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>성남금토A-4 신혼희망타운 모기지 계산기</title>
-  <meta name="description" content="분양가 630,000,000원, 입주 2026년 11월, 대출 금리 1.3% 기준 신혼희망타운 수익공유 정산 계산기">
+  <meta name="description" content="성남금토A-4 타입·층·옵션별 분양가와 입주 2026년 11월, 대출 금리 1.3% 기준 신혼희망타운 수익공유 정산 계산기">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <main class="app-shell">
     <section class="summary-panel" aria-labelledby="page-title">
       <div>
-        <p class="eyebrow">고정 조건 계산기</p>
+        <p class="eyebrow">타입별 분양가 계산기</p>
         <h1 id="page-title">성남금토A-4 신혼희망타운 모기지 계산기</h1>
-        <p class="intro">분양가, 입주시기, 대출 금리를 고정하고 보유기간별 정산표 기준으로 환수금을 계산합니다.</p>
+        <p class="intro">주택 타입과 층, 옵션별 분양가를 반영하고 보유기간별 정산표 기준으로 환수금을 계산합니다.</p>
       </div>
 
       <dl class="fixed-grid" aria-label="고정 계산 조건">
         <div>
-          <dt>분양가 / 입주금</dt>
-          <dd>630,000,000원</dd>
+          <dt>선택 분양가 / 입주금</dt>
+          <dd id="purchasePriceDisplay">626,740,000원</dd>
         </div>
         <div>
           <dt>입주 시기</dt>
@@ -34,6 +34,36 @@
 
     <section class="calculator-grid" aria-label="계산기">
       <form class="input-panel" id="calculatorForm">
+        <fieldset>
+          <legend>주택 선택</legend>
+
+          <label for="housingType">주택 타입</label>
+          <select id="housingType" name="housingType">
+            <option value="55A">55A</option>
+            <option value="55B">55B</option>
+            <option value="55C">55C</option>
+            <option value="55D">55D</option>
+            <option value="55E" selected>55E</option>
+            <option value="55F">55F</option>
+          </select>
+
+          <label for="floorType">층별</label>
+          <select id="floorType" name="floorType">
+            <option value="1층">1층</option>
+            <option value="2층">2층</option>
+            <option value="3층">3층</option>
+            <option value="4층">4층</option>
+            <option value="5층~최상층" selected>5층~최상층</option>
+          </select>
+
+          <label for="optionType">타입별</label>
+          <select id="optionType" name="optionType">
+            <option value="기본형" selected>기본형</option>
+            <option value="마이너스옵션">마이너스옵션</option>
+          </select>
+          <p class="hint" id="purchasePriceHint">선택 분양가 626,740,000원</p>
+        </fieldset>
+
         <fieldset>
           <legend>대출 조건</legend>
 
