@@ -248,7 +248,8 @@ function updateActiveLtvButton(basePurchasePrice) {
 }
 
 function getBasePurchasePrice() {
-  return HOUSING_PRICES[housingTypeInput.value][floorTypeInput.value][optionTypeInput.value];
+  const optionType = optionTypeInput.checked ? "마이너스옵션" : "기본형";
+  return HOUSING_PRICES[housingTypeInput.value][floorTypeInput.value][optionType];
 }
 
 function updateResults(result) {
