@@ -216,7 +216,7 @@ function calculate() {
 
 function updatePurchasePrice(basePurchasePrice, optionPrice, purchasePrice) {
   purchasePriceDisplay.textContent = formatWon(purchasePrice);
-  purchasePriceHint.textContent = `주택가격 ${formatWon(basePurchasePrice)} + 옵션 ${formatWon(optionPrice)} = 총 분양가 ${formatWon(purchasePrice)}`;
+  purchasePriceHint.textContent = `선택 주택가격 ${formatWon(basePurchasePrice)} · 옵션 ${formatWon(optionPrice)}`;
 }
 
 function updateHints(purchasePrice, loanAmount, sellPrice, holdingYears, ltv, bucket) {
